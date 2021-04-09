@@ -1,6 +1,5 @@
 
-
-package juegogato;
+ackage juegogato;
 import java.io.*;
 import java.util.Scanner;
 
@@ -11,7 +10,9 @@ public class JuegoGato {
         hilos h[];
         String numero;
         int valor;
-        int random = 0;
+        int random;
+        int cont=1;
+        int aux=0;
         System.out.println("Ingresa el numero de partidas: ");
         Scanner teclado=new Scanner(System.in);
         numero=teclado.nextLine();
@@ -21,7 +22,6 @@ public class JuegoGato {
         h=new hilos[valor*2];
         int i;
         for(i=0; i<valor*2; i++){
-            random=(int) ((Math.random()) * 20)%2;
             try{
                 out[i]=new PipedOutputStream();
                 in[i]=new PipedInputStream(out[i]);
@@ -30,10 +30,14 @@ public class JuegoGato {
         for(i=0; i<valor*2; i++){
             try{
                 if(i%2==0){
-                    h[i]=new hilos(in[i], out[i+1], random, 1);//Tablero de Circulo
+                    random=(int) ((Math.random()) * 20)%2;
+                    h[i]=new hilos(in[i], out[i+1], random, 1, cont);//Tablero de Circulo
+                    aux=random;
                 }
-                else
-                    h[i]=new hilos(in[i], out[i-1], random, 0);//Tablero de Tache asociado al Circulo
+                else{
+                    h[i]=new hilos(in[i], out[i-1], aux, 0, cont);//Tablero de Tache asociado al Circulo
+                    cont++;
+                }
             }catch(Exception e){}
         }
     }
@@ -41,4 +45,3 @@ public class JuegoGato {
         inicio();
     }
 }
-
