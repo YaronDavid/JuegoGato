@@ -1,47 +1,50 @@
 
-ackage juegogato;
+package juegogato;
 import java.io.*;
 import java.util.Scanner;
 
 public class JuegoGato {
-    private static void inicio() {
-        PipedInputStream in[];
-        PipedOutputStream out[];
-        hilos h[];
+    private static void inicio(int juego) {
+        PipedInputStream in = null;
+        PipedOutputStream out=null;
+        PipedInputStream in2=null;
+        PipedOutputStream out2=null;
+        hilos h1;
+        hilos h2;
+        Thread hilo1;
+        Thread hilo2;
+        int random;
+        int aux=0;
+        try{
+        out=new PipedOutputStream();
+        in=new PipedInputStream(out);
+        out2=new PipedOutputStream();
+        in2=new PipedInputStream(out2);
+        }catch(IOException e){}
+            try{
+                    random=(int) ((Math.random()) * 20)%2;
+                    h1=new hilos(in, out2, random, 1, juego);//Tablero de Circulo
+                    aux=random;
+                    h2=new hilos(in2, out, aux, 0, juego);//Tablero de Tache asociado al Circulo
+                    hilo1=new Thread(h1);
+                    hilo2=new Thread(h2);
+                    hilo1.start();
+                    hilo2.start();
+            }catch(Exception e){}
+        
+    }
+    
+    public static void main(String args[]){
         String numero;
         int valor;
-        int random;
-        int cont=1;
-        int aux=0;
+        int i;
         System.out.println("Ingresa el numero de partidas: ");
         Scanner teclado=new Scanner(System.in);
         numero=teclado.nextLine();
         valor=Integer.parseInt(numero);
-        out=new PipedOutputStream[valor*2];
-        in=new PipedInputStream[valor*2];
-        h=new hilos[valor*2];
-        int i;
-        for(i=0; i<valor*2; i++){
-            try{
-                out[i]=new PipedOutputStream();
-                in[i]=new PipedInputStream(out[i]);
-            }catch(IOException e){}
+        for(i=0; i<valor; i++){
+            inicio(i+1);
         }
-        for(i=0; i<valor*2; i++){
-            try{
-                if(i%2==0){
-                    random=(int) ((Math.random()) * 20)%2;
-                    h[i]=new hilos(in[i], out[i+1], random, 1, cont);//Tablero de Circulo
-                    aux=random;
-                }
-                else{
-                    h[i]=new hilos(in[i], out[i-1], aux, 0, cont);//Tablero de Tache asociado al Circulo
-                    cont++;
-                }
-            }catch(Exception e){}
-        }
-    }
-    public static void main(String args[]){
-        inicio();
     }
 }
+
